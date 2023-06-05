@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+</head>
+<body>
+<div th:replace="component/component :: header"></div>
+<div th:replace="component/component :: nav"></div>
+<section>
+  <div>
+    <h2>보드 save입니다</h2>
+      <form action="/board/save" method="post" enctype="multipart/form-data">
+          <table>
+              <tr>
+                  <th colspan="5"><label for="boardTitle">제목</label></th>
+              </tr>
+              <tr>
+                  <th colspan="5"><input type="text" name="boardTitle" id="boardTitle" style="width: 100%;"></th>
+              </tr>
+              <tr>
+                  <th><label for="boardWriter">작성자</label></th>
+                  <th><input type="text" name="boardWriter" id="boardWriter" style="width: 100%;"></th>
+                  <th><label for="boardPassword">비밀번호</label></th>
+                  <th><input type="password" name="boardPass" id="boardPassword" style="width: 100%;"></th>
+                  <th><label for="boardFile">업로드</label>
+                  <input type="file" name="boardFile" id="boardFile" style="display: none;"></th>
+              </tr>
+              <tr>
+                  <th colspan="5"><label for="boardContents">내용</label></th>
+              </tr>
+              <tr>
+                  <th colspan="5"><textarea id="boardContents" name="boardContents" COLS="104" ROWS="30"></textarea></th>
+              </tr>
+              <tr>
+                  <th colspan="5">
+                      <input type="submit" th:value="등록">
+                  </th>
+              </tr>
+          </table>
+      </form>
+  </div>
+</section>
+<div th:replace="component/component :: footer"></div>
+</body>
+</html>

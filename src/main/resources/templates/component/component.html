@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>component</title>
+</head>
+<body>
+<header th:fragment="header" id="header">
+  <div>
+    <h2>Spring Boot Member Project</h2>
+  </div>
+</header>
+<nav th:fragment="nav" id="nav">
+  <div>
+    <ul>
+        <li>
+            <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/board/save">글작성</a>
+        </li>
+        <li>
+          <a href="/board/">글목록</a>
+        </li>
+    </ul>
+  </div>
+</nav>
+<footer th:fragment="footer" id="footer">
+  <div id="footer1">
+
+  </div>
+  <script>
+    const date = new Date();
+    const footer = document.getElementById('footer1');
+    footer.innerHTML = "<p>&copy" + date.getFullYear() + "&nbsp;HRDKOREA All rights reserved."
+  </script>
+</footer>
+</body>
+</html>

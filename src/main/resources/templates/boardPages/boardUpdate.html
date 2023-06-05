@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+</head>
+<body>
+<div th:replace="component/component :: header"></div>
+<div th:replace="component/component :: nav"></div>
+<section>
+  <div>
+    <h2>안녕하세요 update입니다</h2>
+      <form action="/board/update" method="post" enctype="multipart/form-data">
+          <table style="width: 815px;">
+              <tr>
+                  <th>
+                      <input type="text" name="id" th:value="${boardDTO.id}" style="display:none;">
+                      <input type="password" name="boardPass" th:value="${boardDTO.boardPass}" style="display:none;">
+                      <input type="text" name="boardHits" th:value="${boardDTO.boardHits}" style="display:none;">
+                      <input type="text" name="boardTitle" th:value="${boardDTO.boardTitle}" style="width: 100%;">
+                      <input type="text" name="fileAttached" th:value="${boardDTO.fileAttached}" style="display:none;">
+                  </th>
+              </tr>
+              <tr>
+                  <th>
+                      <input type="text" name="boardWriter" style="width: 100%;" th:value="${boardDTO.boardWriter}">
+                  </th>
+              </tr>
+              <tr>
+                  <th>내용</th>
+              </tr>
+              <tr>
+                  <th style="height: 500px;">
+                      <textarea th:text="${boardDTO.boardContents}" name="boardContents" COLS="104" ROWS="30"></textarea>
+                  </th>
+              </tr>
+              <tr>
+                  <th>
+                      <input type="submit">
+                  </th>
+              </tr>
+          </table>
+      </form>
+  </div>
+</section>
+<div th:replace="component/component :: footer"></div>
+</body>
+</html>
