@@ -23,10 +23,9 @@
                 <th style="height: 500px;"><p th:text="${boardDTO.boardContents}"></p></th>
             </tr>
             <tr th:if="${boardDTO.fileAttached == 1}">
-                <th>image</th>
-                <td>
-                    <img th:src="@{|/upload/${boardDTO.storedFileName}}" width="200" height="200" alt="">
-                </td>
+                <th th:each="fileName: ${boardDTO.storedFileName}">
+                    <img th:src="@{|/upload/${fileName}}" width="200" height="200" alt="">
+                </th>
             </tr>
             <tr id="passCheckBox" style="display: none;">
                 <th>
