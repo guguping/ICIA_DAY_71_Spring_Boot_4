@@ -22,6 +22,12 @@
             <tr>
                 <th style="height: 500px;"><p th:text="${boardDTO.boardContents}"></p></th>
             </tr>
+            <tr th:if="${boardDTO.fileAttached == 1}">
+                <th>image</th>
+                <td>
+                    <img th:src="@{|/upload/${boardDTO.storedFileName}}" width="200" height="200" alt="">
+                </td>
+            </tr>
             <tr id="passCheckBox" style="display: none;">
                 <th>
                     <label for="passCheck">비밀번호 확인:</label>

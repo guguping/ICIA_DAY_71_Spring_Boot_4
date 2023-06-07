@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class BoardController {
         return "/boardPages/boardSave";
     }
     @PostMapping("/board/save")
-    public String saveBoard(@ModelAttribute BoardDTO boardDTO) throws Exception{
+    public String saveBoard(@ModelAttribute BoardDTO boardDTO) throws IOException{
         System.out.println("boardDTO = " + boardDTO);
         boardService.save(boardDTO);
         return "redirect:/board/";

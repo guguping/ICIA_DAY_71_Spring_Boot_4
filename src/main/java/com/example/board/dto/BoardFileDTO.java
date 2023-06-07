@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BoardFileDTO {
     Long id;
-    String originalFileName;
-    String storedFileName;
+
     Long boardId;
 }
