@@ -26,12 +26,12 @@
                 <th>
                     <label for="passCheck">비밀번호 확인:</label>
                     <input type="password" id="passCheck">
-                    <button type="button" id="subBtn" th:onclick="boardUpdate([[${boardDTO.id}]],[[${boardDTO.boardPass}]])">제출
-                    </button>
+                    <button type="button" id="subBtn">제출</button>
                 </th>
             </tr>
             <tr>
                 <th>
+                    <button th:onclick="back()">목록</button>
                     <button th:onclick="boardUpdate([[${boardDTO.id}]],[[${boardDTO.boardPass}]])">수정</button>
                     <button th:onclick="boardDelete([[${boardDTO.id}]],[[${boardDTO.boardPass}]])">삭제</button>
                 </th>
@@ -42,30 +42,49 @@
 <div th:replace="component/component :: footer"></div>
 </body>
 <script>
+    const back = () => {
+      location.href= "/board/";
+    }
     const boardUpdate = (boardId, boardPass) => {
         const passCheckBox = document.getElementById('passCheckBox');
         const subBtn = document.getElementById('subBtn');
         passCheckBox.style.display = "table-row";
-        subBtn.setAttribute("onclick","updateBoard([[${boardDTO.id}]],[[${boardDTO.boardPass}]])");
+        subBtn.addEventListener("click", () => {
+            updateBoard(boardId, boardPass);
+        });
     }
     const updateBoard = (boardId,boardPass) => {
         const passCheck = document.getElementById('passCheck');
         const id = boardId;
         const pass = boardPass;
         if (passCheck.value == pass) {
-            location.href = "/board/delete/" + id;
+            location.href = "/board/update/" + id;
         } else {
             alert("비밀번호를 확인해주세요")
         }
     }
-    const boardDelete = (boardId) => {
+    const boardDelete = (boardId,boardPass) => {
         const passCheckBox = document.getElementById('passCheckBox');
+        const subBtn = document.getElementById('subBtn');
+        passCheckBox.style.display = "table-row";
+        subBtn.addEventListener("click", () => {
+            deleteBoard(boardId, boardPass);
+        });
+    }
+    const deleteBoard = (boardId,boardPass) => {
         const passCheck = document.getElementById('passCheck');
         const id = boardId;
         const pass = boardPass;
-        passCheckBox.style.display = "table-row";
         if (passCheck.value == pass) {
-            location.href = "/board/delete/" + id;
+            // location.href = "/board/delete/" + id;
+            axios({
+                method:"delete",
+                url:"/board/"+id
+            }).then(res => {
+                location.href = "/board/";
+            }).catch(err => {
+                alert("삭제 실패!!");
+            })
         } else {
             alert("비밀번호를 확인해주세요")
         }
