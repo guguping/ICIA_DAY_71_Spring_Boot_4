@@ -30,12 +30,13 @@
               </tr>
               <tr>
                   <th style="height: 500px;">
-                      <textarea th:text="${boardDTO.boardContents}" name="boardContents" COLS="104" ROWS="30"></textarea>
+                      <textarea th:text="${boardDTO.boardContents}" id="board-contents" name="boardContents" COLS="104" ROWS="30"></textarea>
                   </th>
               </tr>
               <tr>
                   <th>
-                      <input type="submit">
+<!--                      <input type="submit">-->
+                      <input type="button" value="수정" onclick="board_update()">
                   </th>
               </tr>
           </table>
@@ -44,4 +45,35 @@
 </section>
 <div th:replace="component/component :: footer"></div>
 </body>
+<script>
+    const board_update = () => {
+        const id = document.querySelector('input[name="id"]').value;
+        const boardPass = document.querySelector('input[name="boardPass"]').value;
+        const fileAttached = document.querySelector('input[name="fileAttached"]').value;
+        const boardWriter = document.querySelector('input[name="boardWriter"]').value;
+        const boardTitle = document.querySelector('input[name="boardTitle"]').value;
+        const boardContents = document.querySelector('#board-contents').value;
+        const boardHits = document.querySelector('input[name="boardHits"]').value;
+
+        axios({
+            method:"put",
+            url:"/board/"+id,
+            data:{
+                id:id,
+                boardTitle:boardTitle,
+                boardWriter:boardWriter,
+                boardContents:boardContents,
+                boardHits:boardHits,
+                boardPass:boardPass,
+                fileAttached:fileAttached
+            }
+        }).then(res => {
+            location.href ="/board/"+id;
+        }).catch(err => {
+            alert("수정 실패!");
+        })
+
+
+    }
+</script>
 </html>

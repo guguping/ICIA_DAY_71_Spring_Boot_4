@@ -32,8 +32,8 @@
             <tr>
                 <th>
                     <button th:onclick="back()">목록</button>
-                    <button th:onclick="boardUpdate([[${boardDTO.id}]],[[${boardDTO.boardPass}]])">수정</button>
-                    <button th:onclick="boardDelete([[${boardDTO.id}]],[[${boardDTO.boardPass}]])">삭제</button>
+                    <button th:onclick="req('update')">수정</button>
+                    <button th:onclick="req('delete')">삭제</button>
                 </th>
             </tr>
         </table>
@@ -43,48 +43,33 @@
 </body>
 <script>
     const back = () => {
-      location.href= "/board/";
+        location.href = "/board/";
     }
-    const boardUpdate = (boardId, boardPass) => {
+    const req = (type) => {
         const passCheckBox = document.getElementById('passCheckBox');
         const subBtn = document.getElementById('subBtn');
         passCheckBox.style.display = "table-row";
         subBtn.addEventListener("click", () => {
-            updateBoard(boardId, boardPass);
+            pass_check(type);
         });
     }
-    const updateBoard = (boardId,boardPass) => {
+    const pass_check = (type) => {
         const passCheck = document.getElementById('passCheck');
-        const id = boardId;
-        const pass = boardPass;
+        const id = [[${boardDTO.id}]];
+        const pass = [[${boardDTO.boardPass}]];
+        const result = type;
         if (passCheck.value == pass) {
-            location.href = "/board/update/" + id;
-        } else {
-            alert("비밀번호를 확인해주세요")
-        }
-    }
-    const boardDelete = (boardId,boardPass) => {
-        const passCheckBox = document.getElementById('passCheckBox');
-        const subBtn = document.getElementById('subBtn');
-        passCheckBox.style.display = "table-row";
-        subBtn.addEventListener("click", () => {
-            deleteBoard(boardId, boardPass);
-        });
-    }
-    const deleteBoard = (boardId,boardPass) => {
-        const passCheck = document.getElementById('passCheck');
-        const id = boardId;
-        const pass = boardPass;
-        if (passCheck.value == pass) {
-            // location.href = "/board/delete/" + id;
-            axios({
-                method:"delete",
-                url:"/board/"+id
-            }).then(res => {
-                location.href = "/board/";
-            }).catch(err => {
-                alert("삭제 실패!!");
-            })
+            if (result == 'update'){
+                location.href = "/board/update/" + id;
+            } else if (result == 'delete')
+                axios({
+                    method: "delete",
+                    url: "/board/delete/" + id
+                }).then(res => {
+                    location.href = "/board/";
+                }).catch(err => {
+                    alert("삭제 실패!!");
+                })
         } else {
             alert("비밀번호를 확인해주세요")
         }

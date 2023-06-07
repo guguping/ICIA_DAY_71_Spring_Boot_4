@@ -4,13 +4,13 @@ import com.example.board.dto.BoardDTO;
 import com.example.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -56,12 +56,16 @@ public class BoardController {
     @PostMapping("/board/update")
     public String updateBoard(@ModelAttribute BoardDTO boardDTO) {
         boardService.boardUpdate(boardDTO);
-        System.out.println("boardDTO = " + boardDTO);
         return "redirect:/board/"+boardDTO.getId();
     }
-    @GetMapping("/board/delete/{id}")
-    private String boardDelete(@PathVariable Long id){
+    @DeleteMapping("/board/delete/{id}")
+    private ResponseEntity boardDelete(@PathVariable Long id){
         boardService.boardDelete(id);
-        return "redirect:/board/";
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PutMapping("/board/{id}")
+    public ResponseEntity update(@RequestBody BoardDTO boardDTO) throws IOException {
+        boardService.boardUpdate(boardDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
