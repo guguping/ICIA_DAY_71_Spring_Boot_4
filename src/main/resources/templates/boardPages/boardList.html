@@ -6,7 +6,7 @@
 <body>
 <div th:replace="component/component :: header"></div>
 <div th:replace="component/component :: nav"></div>
-<section>
+<section style="overflow: unset;">
   <div>
     <h2>보드 list입니다</h2>
       <table>
@@ -21,7 +21,7 @@
               <th th:text="${boardDTO.id}"></th>
               <th><a th:href="@{|/board/${boardDTO.id}|}" th:text="${boardDTO.boardTitle}" ></a></th>
               <th th:text="${boardDTO.boardWriter}"></th>
-              <th th:text="${#temporals.format(boardDTO.createdAt,'yyyy-MM-dd')}"></th>
+              <th th:text="*{#temporals.format(boardDTO.createdAt,'yyyy-MM-dd')}"></th>
               <th th:text="${boardDTO.boardHits}"></th>
           </tr>
       </table>

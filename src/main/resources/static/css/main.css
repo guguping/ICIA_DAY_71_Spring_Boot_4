@@ -51,9 +51,8 @@ section {
     display: flex;
     justify-content: center;
     background-color: #9fbef8;
-    height: 80vh;
+    min-height: 80vh;
     width: 100%;
-    overflow-y: auto;
 }
 footer {
     display: flex;
