@@ -20,8 +20,8 @@
                 <th>내용</th>
             </tr>
             <tr>
-                <th style="height: 500px;">
-                    <div style="height: 500px;" th:text="${boardDTO.boardContents}"></div>
+                <th style="min-height: 300px;">
+                    <div style="min-height: 300px;" th:text="${boardDTO.boardContents}"></div>
                 </th>
             </tr>
             <tr th:if="${boardDTO.fileAttached == 1}">
@@ -40,7 +40,12 @@
             <tr>
                 <th>댓글</th>
             </tr>
-            <tbody id="commentResult">
+            <tbody th:if="${commentList == null}">
+            <tr>
+                <th><p>작성된 댓글이 없습니다.</p></th>
+            </tr>
+            </tbody>
+            <tbody th:unless="${commentList==null}" id="commentResult">
             <th:block th:each="comment : ${commentList}">
                 <tr>
                     <td id="commentResult-item">
@@ -73,21 +78,26 @@
             </tr>
         </table>
     </div>
-    <div id="comment-List">
-        <table>
-            <tr>
-                <th>id</th>
-                <th>writer</th>
-                <th>contents</th>
-                <th>date</th>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
+<!--    <div id="comment-List">-->
+<!--        <div th:if="${commentList == null}">-->
+<!--            <p>작성된 댓글이 없습니다.</p>-->
+<!--        </div>-->
+<!--        <div th:unless="${commentList == null}">-->
+<!--        <table>-->
+<!--            <tr>-->
+<!--                <th>id</th>-->
+<!--                <th>writer</th>-->
+<!--                <th>contents</th>-->
+<!--                <th>date</th>-->
+<!--            </tr>-->
+<!--            <tr th:each="comment : ${commentList}">-->
+<!--                <td th:text="${comment.id}"></td>-->
+<!--                <td th:text="${comment.commentWriter}"></td>-->
+<!--                <td th:text="${comment.commentContents}"></td>-->
+<!--                <td th:text="${comment.createdAt}"></td>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--        </div>-->
     </div>
 </section>
 <div th:replace="component/component :: footer"></div>
@@ -170,6 +180,8 @@
                 output += '</tr>';
             }
             commentResult.innerHTML = output;
+            document.querySelector("#commentWriter").value = "";
+            document.querySelector("#commentContents").value = "";
             comment_list(res.data);
         }).catch(res => {
             alert("!11")

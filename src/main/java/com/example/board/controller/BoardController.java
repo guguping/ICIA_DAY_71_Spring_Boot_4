@@ -41,14 +41,19 @@ public class BoardController {
     @GetMapping("/board/{id}")
     public String boardDetail(@PathVariable Long id,Model model){
         boardService.updateHits(id);
-        BoardDTO boardDTO = null;
+
         try {
-            boardDTO = boardService.findById(id);
-            model.addAttribute("commentList",commentService.findAll(boardDTO.getId()));
+            BoardDTO boardDTO = boardService.findById(id);
+            List<CommentDTO> commentDTOList = commentService.findAll(boardDTO.getId());
+            model.addAttribute("boardDTO",boardDTO);
+            if (commentDTOList.size() > 0){
+                model.addAttribute("commentList",commentDTOList);
+            } else {
+                model.addAttribute("commentList",null);
+            }
         } catch (NoSuchElementException e) {
             return "boardPages/boardNotFound";
         }
-        model.addAttribute("boardDTO",boardDTO);
         return "/boardPages/boardDetail";
     }
     @GetMapping("/board/update/{id}")
