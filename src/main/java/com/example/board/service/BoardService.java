@@ -28,7 +28,7 @@ public class BoardService {
     private final CommentRepository commentRepository;
 
     public void save(BoardDTO boardDTO) throws IOException {
-        if (boardDTO.getBoardFile().get(0).isEmpty()) {
+        if (boardDTO.getBoardFile() ==null || boardDTO.getBoardFile().get(0).isEmpty()) {
             boardRepository.save(BoardEntity.toSaveEntity(boardDTO));
         } else {
             // 파일 있음
