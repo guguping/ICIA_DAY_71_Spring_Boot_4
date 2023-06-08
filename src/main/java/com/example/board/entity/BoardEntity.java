@@ -3,9 +3,9 @@ package com.example.board.entity;
 import com.example.board.dto.BoardDTO;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.security.auth.callback.LanguageCallback;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "board_table")
 @Getter
 @Setter
-public class BoardEntity {
+public class BoardEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -31,12 +31,10 @@ public class BoardEntity {
     @Column
     int fileAttached;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
     @OneToMany(mappedBy = "boardEntity",cascade = CascadeType.REMOVE,orphanRemoval = true,fetch = FetchType.LAZY)
     List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
+    @OneToMany(mappedBy = "boardEntity",cascade = CascadeType.REMOVE,orphanRemoval = true,fetch = FetchType.LAZY)
+    List<CommentEntity> commentEntityList = new ArrayList<>();
 
     public static BoardEntity toSaveEntity(BoardDTO boardDTO){
         BoardEntity boardEntity = new BoardEntity();
@@ -45,6 +43,7 @@ public class BoardEntity {
         boardEntity.setBoardPass(boardDTO.getBoardPass());
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardHits(boardDTO.getBoardHits());
+        boardEntity.setCreatedAt(boardEntity.getCreatedAt());
         boardEntity.setFileAttached(0);
         return boardEntity;
     }
@@ -57,7 +56,8 @@ public class BoardEntity {
         boardEntity.setBoardPass(boardDTO.getBoardPass());
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardHits(boardDTO.getBoardHits());
-        boardEntity.setCreatedAt(boardDTO.getCreatedAt());
+        boardEntity.setCreatedAt(boardEntity.getUpdatedAt());
+        boardEntity.setFileAttached(boardDTO.getFileAttached());
         return boardEntity;
     }
 

@@ -20,11 +20,14 @@
                 <th>내용</th>
             </tr>
             <tr>
-                <th style="height: 500px;"><p th:text="${boardDTO.boardContents}"></p></th>
+                <th style="height: 500px;">
+                    <div style="height: 500px;" th:text="${boardDTO.boardContents}"></div>
+                </th>
             </tr>
             <tr th:if="${boardDTO.fileAttached == 1}">
                 <th>
-                    <img th:each="fileName: ${boardDTO.storedFileName}" th:src="@{|/upload/${fileName}}" width="200" height="200" alt="">
+                    <img th:each="fileName: ${boardDTO.storedFileName}" th:src="@{|/upload/${fileName}}" width="200"
+                         height="200" alt="">
                 </th>
             </tr>
             <tr id="passCheckBox" style="display: none;">
@@ -35,6 +38,33 @@
                 </th>
             </tr>
             <tr>
+                <th>댓글</th>
+            </tr>
+            <tbody id="commentResult">
+            <th:block th:each="comment : ${commentList}">
+                <tr>
+                    <td id="commentResult-item">
+                        <span th:text="${comment.commentWriter} +' : '+${comment.commentContents}"></span>
+                        <span style="float: right;"
+                              th:text="${comment.createdAt}"></span>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+            <tr>
+                <th>
+                    <div style="padding-bottom: 10px;">
+                        <label for="commentWriter" style="padding-bottom: 10px;">작성자:</label>
+                        <input type="text" id="commentWriter">
+                    </div>
+                    <textarea ROWS="5" cols="110" id="commentContents"></textarea>
+                    <div style="position: relative;">
+                        <button type="button" th:onclick="savedComment()" id="commentBtn">등록</button>
+                    </div>
+                </th>
+            </tr>
+
+            <tr>
                 <th>
                     <button th:onclick="back()">목록</button>
                     <button th:onclick="req('update')">수정</button>
@@ -43,10 +73,47 @@
             </tr>
         </table>
     </div>
+    <div id="comment-List">
+        <table>
+            <tr>
+                <th>id</th>
+                <th>writer</th>
+                <th>contents</th>
+                <th>date</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
 </section>
 <div th:replace="component/component :: footer"></div>
 </body>
 <script>
+    const comment_list = (commentList) => {
+        console.log("댓글 목록 함수", commentList);
+        const resultArea = document.querySelector("#comment-List");
+        let output = "<table>\n" +
+            "            <tr>\n" +
+            "                <th>id</th>\n" +
+            "                <th>writer</th>\n" +
+            "                <th>contents</th>\n" +
+            "                <th>date</th>\n" +
+            "            </tr>";
+        for (let i in commentList) {
+            output += "<tr>\n" +
+                "                <td>"+commentList[i].id+"</td>\n" +
+                "                <td>"+commentList[i].commentWriter+"</td>\n" +
+                "                <td>"+commentList[i].commentContents+"</td>\n" +
+                "                <td>"+commentList[i].createdAt+"</td>\n" +
+                "            </tr>";
+        }
+            "</table>";
+        resultArea.innerHTML = output;
+    }
     const back = () => {
         location.href = "/board/";
     }
@@ -64,7 +131,7 @@
         const pass = [[${boardDTO.boardPass}]];
         const result = type;
         if (passCheck.value == pass) {
-            if (result == 'update'){
+            if (result == 'update') {
                 location.href = "/board/update/" + id;
             } else if (result == 'delete')
                 axios({
@@ -78,6 +145,35 @@
         } else {
             alert("비밀번호를 확인해주세요")
         }
+    }
+    const savedComment = () => {
+        const boardId = [[${boardDTO.id}]];
+        const commentWriter = document.getElementById('commentWriter').value;
+        const commentContents = document.getElementById('commentContents').value;
+        const commentResult = document.getElementById('commentResult');
+        axios({
+            method: "post",
+            url: "/board/comment",
+            data: {
+                commentWriter: commentWriter,
+                commentContents: commentContents,
+                boardId: boardId
+            }
+        }).then(res => {
+            let output = "";
+            for (let i in res.data) {
+                output += '<tr>';
+                output += '<td id="commentResult-item">';
+                output += '<span>' + res.data[i].commentWriter + ' : ' + res.data[i].commentContents + '</span>';
+                output += '<span style="float: right">' + res.data[i].createdAt + '</span>';
+                output += '</td>';
+                output += '</tr>';
+            }
+            commentResult.innerHTML = output;
+            comment_list(res.data);
+        }).catch(res => {
+            alert("!11")
+        })
     }
 </script>
 </html>

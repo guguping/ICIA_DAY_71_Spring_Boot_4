@@ -1,7 +1,9 @@
 package com.example.board.dto;
 
+import com.example.board.entity.BaseEntity;
 import com.example.board.entity.BoardEntity;
 import com.example.board.entity.BoardFileEntity;
+import com.example.board.uil.UtilClass;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +26,7 @@ public class BoardDTO {
     String boardPass;
     String boardContents;
     int boardHits = 0;
-    LocalDateTime createdAt;
+    String createdAt;
     int fileAttached =0;
     List<MultipartFile> boardFile;
     List<String> originalFileName;
@@ -38,7 +40,7 @@ public class BoardDTO {
         boardDTO.setBoardPass(boardEntity.getBoardPass());
         boardDTO.setBoardContents(boardEntity.getBoardContents());
         boardDTO.setBoardHits(boardEntity.getBoardHits());
-        boardDTO.setCreatedAt(boardEntity.getCreatedAt());
+        boardDTO.setCreatedAt(UtilClass.dateFormat(boardEntity.getCreatedAt()));
 
         //파일 여부에 따른 코드 추가
         if (boardEntity.getFileAttached() == 1){

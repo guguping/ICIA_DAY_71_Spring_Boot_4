@@ -1,7 +1,9 @@
 package com.example.board.controller;
 
 import com.example.board.dto.BoardDTO;
+import com.example.board.dto.CommentDTO;
 import com.example.board.service.BoardService;
+import com.example.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+    private final CommentService commentService;
     @GetMapping("/board/save")
     public String boardSave(){
         return "/boardPages/boardSave";
@@ -41,6 +44,7 @@ public class BoardController {
         BoardDTO boardDTO = null;
         try {
             boardDTO = boardService.findById(id);
+            model.addAttribute("commentList",commentService.findAll(boardDTO.getId()));
         } catch (NoSuchElementException e) {
             return "boardPages/boardNotFound";
         }
@@ -68,5 +72,15 @@ public class BoardController {
     public ResponseEntity update(@RequestBody BoardDTO boardDTO) throws IOException {
         boardService.boardUpdate(boardDTO);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/board/comment")
+    public ResponseEntity boardComment(@RequestBody CommentDTO commentDTO) {
+        try {
+            commentService.commentSave(commentDTO);
+            List<CommentDTO> commentDTOList = commentService.findAll(commentDTO.getBoardId());
+            return new ResponseEntity<>(commentDTOList,HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

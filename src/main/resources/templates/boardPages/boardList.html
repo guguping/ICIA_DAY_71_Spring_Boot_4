@@ -21,7 +21,7 @@
               <th th:text="${boardDTO.id}"></th>
               <th><a th:href="@{|/board/${boardDTO.id}|}" th:text="${boardDTO.boardTitle}" ></a></th>
               <th th:text="${boardDTO.boardWriter}"></th>
-              <th th:text="*{#temporals.format(boardDTO.createdAt,'yyyy-MM-dd')}"></th>
+              <th th:text="${boardDTO.createdAt}"></th>
               <th th:text="${boardDTO.boardHits}"></th>
           </tr>
       </table>

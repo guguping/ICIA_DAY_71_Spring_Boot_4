@@ -61,3 +61,18 @@ footer {
     background-color: #f7afff;
     height: 5vh;
 }
+#commentBtn {
+    width: 77px;
+    height: 73px;
+    position: absolute;
+    right: 2px;
+    background-color: white;
+    border: unset;
+    top: -79px;
+    cursor: pointer;
+}
+#commentResult-item {
+    border: solid 1px black;
+    font-weight: bold;
+    padding: 5px;
+}
