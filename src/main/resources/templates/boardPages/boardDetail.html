@@ -131,28 +131,31 @@
         const q = [[${q}]];
         location.href = "/board?page="+page+"&type="+type+"&q="+q;
     }
-    const req = (type) => {
+    const req = (typeUD) => {
         const passCheckBox = document.getElementById('passCheckBox');
         const subBtn = document.getElementById('subBtn');
         passCheckBox.style.display = "table-row";
         subBtn.addEventListener("click", () => {
-            pass_check(type);
+            pass_check(typeUD);
         });
     }
-    const pass_check = (type) => {
+    const pass_check = (typeUD) => {
         const passCheck = document.getElementById('passCheck');
         const id = [[${boardDTO.id}]];
         const pass = [[${boardDTO.boardPass}]];
-        const result = type;
+        const result = typeUD;
+        const page = [[${page}]];
+        const type = [[${type}]];
+        const q = [[${q}]];
         if (passCheck.value == pass) {
             if (result == 'update') {
-                location.href = "/board/update/" + id;
+                location.href = "/board/update/" + id + "?page="+page+"&type="+type+"&q="+q;
             } else if (result == 'delete')
                 axios({
                     method: "delete",
                     url: "/board/delete/" + id
                 }).then(res => {
-                    location.href = "/board/";
+                    location.href ="/board?page="+page+"&type="+type+"&q="+q;
                 }).catch(err => {
                     alert("삭제 실패!!");
                 })

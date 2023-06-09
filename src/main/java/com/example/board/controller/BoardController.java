@@ -95,14 +95,22 @@ public class BoardController {
         return "/boardPages/boardDetail";
     }
     @GetMapping("/board/update/{id}")
-    public String boardUpdate(@PathVariable Long id , Model model) {
+    public String boardUpdate(@PathVariable Long id , @RequestParam("page") int page,
+                              @RequestParam(value = "type",required = false,defaultValue = "")String type,
+                              @RequestParam(value = "q", required = false , defaultValue = "") String q,Model model) {
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("boardDTO",boardDTO);
+        model.addAttribute("page",page);
+        model.addAttribute("type",type);
+        model.addAttribute("q",q);
         return "/boardPages/boardUpdate";
     }
 
     @PostMapping("/board/update")
-    public String updateBoard(@ModelAttribute BoardDTO boardDTO) {
+    public String updateBoard(@ModelAttribute BoardDTO boardDTO,
+                              @RequestParam("page") int page,
+                              @RequestParam(value = "type",required = false,defaultValue = "")String type,
+                              @RequestParam(value = "q", required = false , defaultValue = "") String q,Model model) {
         boardService.boardUpdate(boardDTO);
         return "redirect:/board/"+boardDTO.getId();
     }

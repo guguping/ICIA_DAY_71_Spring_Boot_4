@@ -45,7 +45,7 @@
 </section>
 <div th:replace="component/component :: footer"></div>
 </body>
-<script>
+<script th:inline="javascript">
     const board_update = () => {
         const id = document.querySelector('input[name="id"]').value;
         const boardPass = document.querySelector('input[name="boardPass"]').value;
@@ -54,6 +54,9 @@
         const boardTitle = document.querySelector('input[name="boardTitle"]').value;
         const boardContents = document.querySelector('#board-contents').value;
         const boardHits = document.querySelector('input[name="boardHits"]').value;
+        const page = [[${page}]];
+        const type = [[${type}]];
+        const q = [[${q}]];
 
         axios({
             method:"put",
@@ -68,7 +71,7 @@
                 fileAttached:fileAttached
             }
         }).then(res => {
-            location.href ="/board/"+id;
+            location.href ="/board?page="+page+"&type="+type+"&q="+q;
         }).catch(err => {
             alert("수정 실패!");
         })
