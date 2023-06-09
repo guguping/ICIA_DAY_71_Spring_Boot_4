@@ -39,13 +39,21 @@ public class BoardController {
         model.addAttribute("boardDTO",boardDTO);
         return "/boardPages/boardList";
     }
+
     @GetMapping("/board")
-    public String paging(@PageableDefault(page = 1)Pageable pageable , Model model){
+    public String paging(@PageableDefault(page = 1)Pageable pageable ,
+                         @RequestParam(value = "type",required = false,defaultValue = "")String type,
+                         @RequestParam(value = "q", required = false , defaultValue = "") String q,
+                         Model model){
         //Pageable 는 자바에서 제공하는 인터페이스와 스프링에서 제공하는 인터페이스가 있는데 스프링에서 제공하는
         //Pageable을 사용해야한다
         System.out.println("pageable = " + pageable);
-        Page<BoardDTO> boardDTOS = boardService.paging(pageable);
-        model.addAttribute("boardList",boardDTOS);
+        Page<BoardDTO> boardDTOS = boardService.paging(pageable, type ,q);
+        if(boardDTOS.getTotalElements() == 0){
+            model.addAttribute("boardList",null);
+        } else {
+            model.addAttribute("boardList",boardDTOS);
+        }
         // 시작페이지(startPage) , 마지막페이지(endPage)값 계산
         // 하단에 보여줄 페이지 갯수 3개
         int blockLimit = 3;
@@ -59,12 +67,19 @@ public class BoardController {
         // maxPage 값을 계산할 필요가 없는 이유는 boardDTOS.getTotalPages() 메서드가 맥스 페이지 값을 리턴해주기 때문이다
         model.addAttribute("startPage",startPage);
         model.addAttribute("endPage",endPage);
+        model.addAttribute("type",type);
+        model.addAttribute("q",q);
         return "/boardPages/boardPaging";
     }
     @GetMapping("/board/{id}")
-    public String boardDetail(@PathVariable Long id,@RequestParam("page") int page,Model model){
+    public String boardDetail(@PathVariable Long id,@RequestParam("page") int page,
+                              @RequestParam(value = "type",required = false,defaultValue = "")String type,
+                              @RequestParam(value = "q", required = false , defaultValue = "") String q,
+                              Model model){
         boardService.updateHits(id);
         model.addAttribute("page",page);
+        model.addAttribute("type",type);
+        model.addAttribute("q",q);
         try {
             BoardDTO boardDTO = boardService.findById(id);
             List<CommentDTO> commentDTOList = commentService.findAll(boardDTO.getId());
@@ -103,9 +118,11 @@ public class BoardController {
     }
     @PostMapping("/board/comment")
     public ResponseEntity boardComment(@RequestBody CommentDTO commentDTO) {
+
         try {
             commentService.commentSave(commentDTO);
             List<CommentDTO> commentDTOList = commentService.findAll(commentDTO.getBoardId());
+            System.out.println("commentDTOList = " + commentDTOList);
             return new ResponseEntity<>(commentDTOList,HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

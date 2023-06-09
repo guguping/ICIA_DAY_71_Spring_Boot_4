@@ -34,7 +34,22 @@
             <a th:href="@{/board(page=1)}">페이징목록</a>
             <!-- 소괄호 안에 파라미터 값을 보내면 rest api 에서도 쿼리스트링 방식 사용 가능 -->
         </li>
+        <li>
+            <select name="type" id="type">
+                <option value="writer">작성자</option>
+                <option value="title">제목</option>
+            </select>
+            <input type="text" placeholder="검색어를 입력하세요" id="q" style="display: inline-block">
+            <button onclick="search_func()">검색</button>
+        </li>
     </ul>
+    <script>
+        const search_func = () => {
+          const type = document.getElementById('type').value;
+          const q = document.getElementById('q').value;
+          location.href = "/board?type="+ type +"&q="+q;
+        }
+    </script>
   </div>
 </nav>
 <footer th:fragment="footer" id="footer">

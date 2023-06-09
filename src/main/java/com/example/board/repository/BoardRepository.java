@@ -31,6 +31,8 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
     List<BoardEntity> findByBoardWriterContaining(String q);
     Page<BoardEntity> findByBoardWriterContaining(String q, Pageable pageable);
 
+    Page<BoardEntity> findByBoardTitleContaining(String q, Pageable pageable);
+
     //제목으로 검색한 결과를 id 기준 내림차순 정렬
     List<BoardEntity> findByBoardTitleContainingOrderByIdDesc(String q);
 

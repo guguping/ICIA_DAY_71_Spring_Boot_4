@@ -30,7 +30,6 @@ import java.util.NoSuchElementException;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
-    private final CommentRepository commentRepository;
 
     public void save(BoardDTO boardDTO) throws IOException {
         if (boardDTO.getBoardFile() ==null || boardDTO.getBoardFile().get(0).isEmpty()) {
@@ -86,10 +85,17 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
-    public Page<BoardDTO> paging(Pageable pageable) {
+    public Page<BoardDTO> paging(Pageable pageable , String type , String q) {
         int page = pageable.getPageNumber() -1;
         int pageLimit = 5;
-        Page<BoardEntity> boardEntities = boardRepository.findAll(PageRequest.of(page,pageLimit, Sort.by(Sort.Direction.DESC,"id")));
+        Page<BoardEntity> boardEntities = null;
+        if(type.equals("title")){
+            boardEntities = boardRepository.findByBoardTitleContaining(q,PageRequest.of(page,pageLimit, Sort.by(Sort.Direction.DESC,"id")));
+        } else if (type.equals("writer")){
+            boardEntities = boardRepository.findByBoardWriterContaining(q,PageRequest.of(page,pageLimit, Sort.by(Sort.Direction.DESC,"id")));
+        } else {
+            boardEntities = boardRepository.findAll(PageRequest.of(page,pageLimit, Sort.by(Sort.Direction.DESC,"id")));
+        }
         // page 몇페이지를 볼건지 , pageLimit 몇개를 보여줄건지 , Sort 어떤 기준으로 보여줄건지
         Page<BoardDTO> boardDTOS = boardEntities.map(boardEntity -> BoardDTO.builder()
                 .id(boardEntity.getId())

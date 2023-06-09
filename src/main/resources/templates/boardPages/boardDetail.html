@@ -40,12 +40,12 @@
             <tr>
                 <th>댓글</th>
             </tr>
-            <tbody th:if="${commentList == null}">
+            <tbody th:if="${commentList == null}" class="commentResult">
             <tr>
                 <th><p>작성된 댓글이 없습니다.</p></th>
             </tr>
             </tbody>
-            <tbody th:unless="${commentList==null}" id="commentResult">
+            <tbody th:unless="${commentList==null}" class="commentResult">
             <th:block th:each="comment : ${commentList}">
                 <tr>
                     <td id="commentResult-item">
@@ -102,31 +102,34 @@
 </section>
 <div th:replace="component/component :: footer"></div>
 </body>
-<script>
-    const comment_list = (commentList) => {
-        console.log("댓글 목록 함수", commentList);
-        const resultArea = document.querySelector("#comment-List");
-        let output = "<table>\n" +
-            "            <tr>\n" +
-            "                <th>id</th>\n" +
-            "                <th>writer</th>\n" +
-            "                <th>contents</th>\n" +
-            "                <th>date</th>\n" +
-            "            </tr>";
-        for (let i in commentList) {
-            output += "<tr>\n" +
-                "                <td>"+commentList[i].id+"</td>\n" +
-                "                <td>"+commentList[i].commentWriter+"</td>\n" +
-                "                <td>"+commentList[i].commentContents+"</td>\n" +
-                "                <td>"+commentList[i].createdAt+"</td>\n" +
-                "            </tr>";
-        }
-            "</table>";
-        resultArea.innerHTML = output;
-    }
+<script th:inline="javascript">
+    // const comment_list = (commentList) => {
+    //     console.log("댓글 목록 함수", commentList);
+    //     const resultArea = document.querySelector("#comment-List");
+    //     let output = "<table>\n" +
+    //         "            <tr>\n" +
+    //         "                <th>id</th>\n" +
+    //         "                <th>writer</th>\n" +
+    //         "                <th>contents</th>\n" +
+    //         "                <th>date</th>\n" +
+    //         "            </tr>";
+    //     for (let i in commentList) {
+    //         output += "<tr>\n" +
+    //             "                <td>"+commentList[i].id+"</td>\n" +
+    //             "                <td>"+commentList[i].commentWriter+"</td>\n" +
+    //             "                <td>"+commentList[i].commentContents+"</td>\n" +
+    //             "                <td>"+commentList[i].createdAt+"</td>\n" +
+    //             "            </tr>";
+    //     }
+    //         "</table>";
+    //     resultArea.innerHTML = output;
+    // }
     const back = () => {
         // location.href = "/board/";
-        location.href = "/board?page="+[[${page}]];
+        const page = [[${page}]];
+        const type = [[${type}]];
+        const q = [[${q}]];
+        location.href = "/board?page="+page+"&type="+type+"&q="+q;
     }
     const req = (type) => {
         const passCheckBox = document.getElementById('passCheckBox');
@@ -161,7 +164,7 @@
         const boardId = [[${boardDTO.id}]];
         const commentWriter = document.getElementById('commentWriter').value;
         const commentContents = document.getElementById('commentContents').value;
-        const commentResult = document.getElementById('commentResult');
+        const commentResult = document.querySelector('.commentResult');
         axios({
             method: "post",
             url: "/board/comment",
@@ -171,6 +174,7 @@
                 boardId: boardId
             }
         }).then(res => {
+            console.log(res);
             let output = "";
             for (let i in res.data) {
                 output += '<tr>';
@@ -183,9 +187,9 @@
             commentResult.innerHTML = output;
             document.querySelector("#commentWriter").value = "";
             document.querySelector("#commentContents").value = "";
-            comment_list(res.data);
-        }).catch(res => {
-            alert("!11")
+            // comment_list(res.data);
+        }).catch(err => {
+            alert("!11");
         })
     }
 </script>
