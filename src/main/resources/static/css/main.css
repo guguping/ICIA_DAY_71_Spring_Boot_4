@@ -76,3 +76,9 @@ footer {
     font-weight: bold;
     padding: 5px;
 }
+.pagingc{
+    color: red;
+}
+tr th span {
+    padding: 0 10px 0 10px;
+}

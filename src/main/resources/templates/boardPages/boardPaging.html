@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+</head>
+<body>
+<div th:replace="component/component :: header"></div>
+<div th:replace="component/component :: nav"></div>
+<section>
+    <div>
+        <h2>페이징board</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>writer</th>
+                <th>title</th>
+                <th>date</th>
+                <th>hits</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board: ${boardList}">
+                <th th:text="${board.id}"></th>
+                <th th:text="${board.boardWriter}"></th>
+                <th><a th:href="@{|/board/${board.id}?page=${boardList.number+1}|}" th:text="${board.boardTitle}"></a></th>
+                <th th:text="${board.createdAt}"></th>
+                <th th:text="${board.boardHits}"></th>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th colspan="5">
+                    <!--첫페이지 요청 링크 /board?page=1 -->
+                    <span><a th:href="@{/board(page=1)}"><span>First</span></a></span>
+
+                    <span th:class="${boardList.first} ? 'disabled'">
+                        <!--boardList.first: isFirst()
+                            boardList.number: getNumber()-->
+                        <a th:href="${boardList.first} ? '#' : @{/board(page=${boardList.number})}"><span><</span></a>
+                        <!-- 사용자 3페이지, number 2 /board?page=2 -->
+                    </span>
+
+                    <!-- startPage ~ endPage 까지 숫자를 만들어주는 역할
+                         for(int page=startPage; page<=endPage; page++) -->
+                    <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+                        <a th:text="${page}" th:href="@{/board(page=${page})}"
+                           th:class="${page == boardList.number + 1} ? 'pagingc':'pagew'" class="noe"></a>
+                    </span>
+
+                    <!-- 다음 페이지 요청
+                         현재 3페이지를 보고 있다면 다음 페이지는 4페이지임.
+                         getNumber() 값은 2임.
+                         따라서 4페이지를 보고 싶다면 getNumber()+2를 해야 컨트롤러에 4를 요청할 수 있음. -->
+                    <span th:class="${boardList.last} ? 'disabled'">
+                        <a th:href="${boardList.last} ? '#' : @{/board(page=${boardList.number + 2})}"><span>&gt;</span></a>
+                        <!-- 사용자 3페이지, number 2 /board?page=4 -->
+                    </span>
+                    <span><a th:href="@{/board(page=${boardList.totalPages})}"><span>Last</span></a></span>
+                </th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</section>
+<div th:replace="component/component :: footer"></div>
+</body>
+</html>

@@ -125,7 +125,8 @@
         resultArea.innerHTML = output;
     }
     const back = () => {
-        location.href = "/board/";
+        // location.href = "/board/";
+        location.href = "/board?page="+[[${page}]];
     }
     const req = (type) => {
         const passCheckBox = document.getElementById('passCheckBox');

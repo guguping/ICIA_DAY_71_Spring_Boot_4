@@ -5,11 +5,12 @@ import com.example.board.dto.CommentDTO;
 import com.example.board.service.BoardService;
 import com.example.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,10 +39,32 @@ public class BoardController {
         model.addAttribute("boardDTO",boardDTO);
         return "/boardPages/boardList";
     }
+    @GetMapping("/board")
+    public String paging(@PageableDefault(page = 1)Pageable pageable , Model model){
+        //Pageable 는 자바에서 제공하는 인터페이스와 스프링에서 제공하는 인터페이스가 있는데 스프링에서 제공하는
+        //Pageable을 사용해야한다
+        System.out.println("pageable = " + pageable);
+        Page<BoardDTO> boardDTOS = boardService.paging(pageable);
+        model.addAttribute("boardList",boardDTOS);
+        // 시작페이지(startPage) , 마지막페이지(endPage)값 계산
+        // 하단에 보여줄 페이지 갯수 3개
+        int blockLimit = 3;
+        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int endPage = ((startPage + blockLimit - 1) < boardDTOS.getTotalPages()) ? startPage + blockLimit - 1 : boardDTOS.getTotalPages();
+//        if ((startPage + blockLimit - 1) < boardDTOS.getTotalPages()){
+//            endPage = startPage + blockLimit -1;
+//        }else {
+//            endPage = boardDTOS.getTotalPages();
+//        }
+        // maxPage 값을 계산할 필요가 없는 이유는 boardDTOS.getTotalPages() 메서드가 맥스 페이지 값을 리턴해주기 때문이다
+        model.addAttribute("startPage",startPage);
+        model.addAttribute("endPage",endPage);
+        return "/boardPages/boardPaging";
+    }
     @GetMapping("/board/{id}")
-    public String boardDetail(@PathVariable Long id,Model model){
+    public String boardDetail(@PathVariable Long id,@RequestParam("page") int page,Model model){
         boardService.updateHits(id);
-
+        model.addAttribute("page",page);
         try {
             BoardDTO boardDTO = boardService.findById(id);
             List<CommentDTO> commentDTOList = commentService.findAll(boardDTO.getId());

@@ -8,8 +8,13 @@ import com.example.board.entity.CommentEntity;
 import com.example.board.repository.BoardFileRepository;
 import com.example.board.repository.BoardRepository;
 import com.example.board.repository.CommentRepository;
+import com.example.board.uil.UtilClass;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.asm.Advice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,4 +86,18 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
+    public Page<BoardDTO> paging(Pageable pageable) {
+        int page = pageable.getPageNumber() -1;
+        int pageLimit = 5;
+        Page<BoardEntity> boardEntities = boardRepository.findAll(PageRequest.of(page,pageLimit, Sort.by(Sort.Direction.DESC,"id")));
+        // page 몇페이지를 볼건지 , pageLimit 몇개를 보여줄건지 , Sort 어떤 기준으로 보여줄건지
+        Page<BoardDTO> boardDTOS = boardEntities.map(boardEntity -> BoardDTO.builder()
+                .id(boardEntity.getId())
+                .boardTitle(boardEntity.getBoardTitle())
+                .boardWriter(boardEntity.getBoardWriter())
+                .createdAt(UtilClass.dateFormat((boardEntity.getCreatedAt())))
+                .boardHits(boardEntity.getBoardHits())
+                .build());
+        return boardDTOS;
+    }
 }
